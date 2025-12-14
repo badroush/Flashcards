@@ -1,0 +1,136 @@
+<!-- src/app/multiplayer/multiplayer.page.html -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goToHome()" fill="clear" color="light">
+        <ion-icon name="home" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Duel FlashQuiz</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="restartGame()" fill="clear" color="light">
+        <ion-icon name="refresh" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Score fixé en haut (inchangé) -->
+  <div class="score-banner">
+    <div class="player-score player-1">
+      <span class="player-name">{{ player1Name }}</span>
+      <span class="score-value">{{ score1 }}</span>
+    </div>
+    <div class="vs">VS</div>
+    <div class="player-score player-2">
+      <span class="player-name">{{ player2Name }}</span>
+      <span class="score-value">{{ score2 }}</span>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Écran de configuration -->
+  <div *ngIf="phase === 'setup'">
+    <h2 style="text-align: center; margin: 30px 0;">Préparez le duel !</h2>
+    <ion-item>
+      <ion-input placeholder="Nom du Joueur 1" [(ngModel)]="player1Name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input placeholder="Nom du Joueur 2" [(ngModel)]="player2Name"></ion-input>
+    </ion-item>
+    <ion-button expand="block" (click)="startGame()" style="margin-top: 24px;">
+      Démarrer le duel
+    </ion-button>
+  </div>
+
+  <!-- Écran de jeu -->
+  <div *ngIf="phase === 'playing'">
+    <div style="text-align: center; margin-bottom: 20px;">
+      <ion-badge color="primary" style="font-size: 1.1rem; padding: 8px 16px;">
+        🔥 {{ currentPlayer === 'player1' ? player1Name : player2Name }} joue !
+      </ion-badge>
+    </div>
+
+    <div class="question-card">
+      <h2>{{ gameQuestions[currentIndex]?.question }}</h2>
+    </div>
+
+    <div class="answers-grid">
+      <div
+  *ngFor="let option of gameQuestions[currentIndex]?.options; let i = index"
+  class="answer-tile"
+  [class.correct]="feedback === 'correct' && option.isCorrect"
+  [class.incorrect]="feedback === 'incorrect' && selectedOptionIndex === i"
+  (click)="selectOption(i)"
+>
+  <div class="letter">{{ getLetter(i) }}</div>
+  <div class="answer-text">{{ option.text }}</div>
+
+  <!-- ✅/❌ icônes de feedback -->
+  <div class="feedback-overlay" *ngIf="feedback && selectedOptionIndex === i">
+    <ion-icon
+      [name]="option.isCorrect ? 'checkmark-circle' : 'close-circle'"
+      [color]="option.isCorrect ? 'success' : 'danger'"
+      class="feedback-icon">
+    </ion-icon>
+  </div>
+</div>
+    </div>
+
+    <div class="score-display" style="margin-top: 24px; text-align: center;">
+      <div>{{ player1Name }} : {{ score1 }}</div>
+      <div>{{ player2Name }} : {{ score2 }}</div>
+    </div>
+  </div>
+
+  <!-- Résultat final élégant -->
+<div *ngIf="phase === 'finished'" class="elegant-result">
+  <div class="trophy">
+    <ion-icon name="trophy" size="large"></ion-icon>
+  </div>
+
+  <h2>🎉 Résultat du Duel</h2>
+
+  <div class="final-scores">
+    <div class="player-result player-1">
+      <div class="player-name">{{ player1Name }}</div>
+      <div class="player-score">{{ score1 }} pts</div>
+    </div>
+
+    <div class="vs-label">VS</div>
+
+    <div class="player-result player-2">
+      <div class="player-name">{{ player2Name }}</div>
+      <div class="player-score">{{ score2 }} pts</div>
+    </div>
+  </div>
+
+  <div class="winner-banner" *ngIf="score1 !== score2">
+    <ion-icon name="ribbon" color="warning"></ion-icon>
+    <span>Gagnant : {{ score1 > score2 ? player1Name : player2Name }}</span>
+  </div>
+
+  <div class="winner-banner tie" *ngIf="score1 === score2">
+    <ion-icon name="people" color="medium"></ion-icon>
+    <span>Égalité parfaite !</span>
+  </div>
+
+  <div class="action-buttons">
+    <ion-button fill="outline" (click)="restartGame()" color="primary">
+      <ion-icon name="refresh"></ion-icon>
+      Nouveau duel
+    </ion-button>
+    <ion-button fill="outline" (click)="goToHome()" color="medium">
+      <ion-icon name="home"></ion-icon>
+      Accueil
+    </ion-button>
+  </div>
+</div>
+</ion-content>
+
+<!-- Styles intégrés (optionnel mais utile) -->
+<style>
+
+</style>

@@ -1,0 +1,159 @@
+/* Arrière-plan clair */
+.profile-content {
+  --background: #f8fafc; /* Fond très clair */
+  color: #1e293b;
+}
+
+/* Carte utilisateur */
+.user-card {
+  padding: 20px 16px 0;
+}
+
+.user-item {
+  --background: white;
+  --border-radius: 20px;
+  --box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 20px;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #ff6b6b;
+}
+
+.user-name {
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.user-email, .user-role {
+  color: #64748b;
+  margin: 4px 0;
+}
+
+/* Carte statistiques */
+.stats-card {
+  padding: 0 16px 24px;
+}
+
+.card-elevated {
+  --background: white;
+  --border-radius: 24px;
+  --box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.card-title {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 16px 0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-item ion-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ff6b6b;
+  margin: 4px 0;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* Historique */
+.history-card {
+  padding: 0 16px 30px;
+}
+
+.history-list {
+  --ion-item-background: white;
+  --border-radius: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  --box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.history-entry {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.history-entry:last-child {
+  border-bottom: none;
+}
+
+.game-mode {
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 4px;
+}
+
+.game-score, .game-date {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 2px 0;
+}
+
+.empty-history {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #ff6b6b; /* bordure corail */
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9; /* fond gris clair si image manque */
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-avatar ion-icon {
+  font-size: 4rem;
+  color: #cbd5e1;
+}

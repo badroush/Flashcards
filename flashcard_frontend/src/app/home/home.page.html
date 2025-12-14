@@ -1,0 +1,387 @@
+<!-- Sidebar (menu latéral) -->
+<ion-menu content-id="main-content" side="start" type="overlay" animated="false">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>FlashCards</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <div class="sidebar-content">
+      <!-- Avatar -->
+      <div class="user-avatar">
+        <ion-icon name="person-circle" size="large"></ion-icon>
+      </div>
+
+      <!-- Nom utilisateur ou invité -->
+      <h3 *ngIf="currentUser?.name">{{ currentUser?.name}}</h3>
+      <p *ngIf="!currentUser">Invité</p>
+      <!-- Bouton de déconnexion -->
+      <div class="logout-section" *ngIf="authService.isLoggedIn">
+        <ion-button expand="block" (click)="onLogout()" color="medium">
+          <ion-icon name="log-out-outline"></ion-icon>
+          Déconnexion
+        </ion-button>
+      </div>
+
+      <div class="profile-button" >
+        <ion-button expand="block" (click)="goToProfile()" color="medium">
+          <ion-icon name="person-circle"></ion-icon>
+          Mon Profil
+        </ion-button>
+      </div>
+      <!-- Score actuel -->
+      <div class="score-card">
+        <ion-icon name="trophy" color="warning"></ion-icon>
+        <div>
+          <div class="score-label">Score actuel</div>
+          <div class="score-value" *ngIf="gameMode === 'solo'">
+            {{ score }}
+          </div>
+          <div class="score-value" *ngIf="gameMode === 'multi'">
+            {{ scores.player1 }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Meilleur score -->
+      <div class="score-card">
+        <ion-icon name="medal" color="success"></ion-icon>
+        <div>
+          <div class="score-label">Meilleur score</div>
+          <div class="score-value">{{ bestScore }}</div>
+        </div>
+      </div>
+      <!-- Bouton de gestion (ADMIN uniquement) -->
+      <div class="admin-actions" *ngIf="authService.isAdmin">
+        <ion-button expand="block" (click)="openManageModal()" color="tertiary">
+          <ion-icon name="settings-outline"></ion-icon>
+          Gérer les cartes
+        </ion-button>
+      </div>
+      <div class="admin-actions">
+  <ion-button expand="block" (click)="openMultiplayer()" color="tertiary">
+    <ion-icon name="people"></ion-icon>
+    Jeu à 2 joueurs
+  </ion-button>
+</div>
+    </div>
+  </ion-content>
+</ion-menu>
+
+<!-- Contenu principal -->
+<ion-content id="main-content" class="ion-padding bright-bg">
+  <!-- Header avec bouton de menu -->
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title class="app-title">🧠 FlashQuiz</ion-title>
+      <ion-buttons slot="end">
+        <ion-button
+          *ngIf="authService.isAdmin"
+          (click)="openModal()"
+          aria-label="Ajouter"
+        >
+          <ion-icon name="add-circle" size="large"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <!-- Score flottant (toujours visible) -->
+  <div class="floating-score" *ngIf="flashcards.length > 0">
+    <div class="score-badge">
+      <ion-icon name="trophy" color="warning"></ion-icon>
+      <span>Score : {{ score }}</span>
+    </div>
+  </div>
+
+  <!-- État vide -->
+<div class="empty-state" *ngIf="flashcards.length === 0">
+  <div class="emoji">📚</div>
+
+  <!-- Pour les ADMIN : proposer de créer -->
+  <ng-container *ngIf="authService.isAdmin">
+    <h1>Prêt à créer ?</h1>
+    <p>Créez votre première question pour commencer le quiz !</p>
+    <ion-button (click)="openModal()" color="primary" class="cta-button">
+      ➕ Créer une question
+    </ion-button>
+  </ng-container>
+
+  <!-- Pour les USER : message informatif -->
+  <ng-container *ngIf="!authService.isAdmin">
+    <h1>Aucune question disponible</h1>
+    <p>Les administrateurs n’ont pas encore ajouté de questions.<br>Revenez plus tard !</p>
+  </ng-container>
+</div>
+
+  <!-- Quiz style émission TV (clair et coloré) -->
+  <div class="quiz-container" *ngIf="flashcards.length > 0">
+    <!-- Barre de progression -->
+    <br />
+    <div class="progress-bar">
+      <span class="progress-text"
+        >Question {{ currentIndex + 1 }} / {{ flashcards.length }}</span
+      >
+    </div>
+
+    <!-- Question -->
+    <div class="question-card">
+      <h2>{{ flashcards[currentIndex]?.question }}</h2>
+    </div>
+
+    <!-- Réponses -->
+    <div class="answers-grid">
+      <div
+        *ngFor="let option of flashcards[currentIndex]?.options; let i = index"
+        class="answer-tile"
+        [class.selected]="selectedOptionIndex === i"
+        [class.correct]="feedback === 'correct' && option.isCorrect"
+        [class.incorrect]="feedback === 'incorrect' && selectedOptionIndex === i"
+        (click)="selectOption(i)"
+      >
+        <div class="letter">{{ getLetter(i) }}</div>
+        <div class="answer-text">{{ option.text }}</div>
+        <ion-icon
+          *ngIf="feedback && selectedOptionIndex === i"
+          [name]="option.isCorrect ? 'checkmark-circle' : 'close-circle'"
+          [color]="option.isCorrect ? 'success' : 'danger'"
+          class="result-icon"
+        ></ion-icon>
+      </div>
+    </div>
+
+    <!-- Feedback -->
+    <div class="feedback" *ngIf="feedback === 'incorrect'">
+      ❌ Réessayez une autre réponse !
+    </div>
+  </div>
+</ion-content>
+
+<!-- Modal d'ajout — style clair et joyeux -->
+<!-- Modal d'ajout avancé -->
+<ion-modal
+  [isOpen]="isModalOpen"
+  (willDismiss)="closeModal()"
+  class="light-modal"
+>
+  <ng-template>
+    <ion-header class="light-header">
+      <ion-toolbar color="primary">
+        <ion-title class="modal-title">✨ Nouvelle Question</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeModal()" color="medium">
+            <ion-icon name="close" size="large"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding light-content">
+      <div class="modal-body">
+        <!-- Question -->
+        <ion-item lines="full" class="input-field">
+          <ion-input
+            label="Question"
+            labelPlacement="stacked"
+            [(ngModel)]="newQuestion"
+            placeholder="Ex. : Quel est le plus grand océan ?"
+          ></ion-input>
+        </ion-item>
+
+        <!-- Options -->
+        <ion-list>
+          <ion-item
+            *ngFor="let option of newOptions; let i = index"
+            lines="full"
+            class="option-item"
+          >
+            <ion-input
+              [(ngModel)]="newOptions[i].text"
+              placeholder="Réponse {{ i + 1 }}"
+            ></ion-input>
+            <ion-checkbox
+              slot="end"
+              [(ngModel)]="newOptions[i].isCorrect"
+              (ngModelChange)="setCorrect(i)"
+            ></ion-checkbox>
+          </ion-item>
+        </ion-list>
+
+        <!-- Boutons d'action -->
+        <div class="modal-actions">
+          <ion-button
+            *ngIf="newOptions.length < 5"
+            (click)="addOption()"
+            fill="outline"
+            color="primary"
+            size="small"
+          >
+            ➕ Ajouter une réponse
+          </ion-button>
+          <ion-button
+            *ngIf="newOptions.length > 2"
+            (click)="removeOption(newOptions.length - 1)"
+            fill="outline"
+            color="danger"
+            size="small"
+          >
+            ➖ Supprimer
+          </ion-button>
+        </div>
+
+        <!-- Bouton de sauvegarde -->
+        <ion-button
+          expand="block"
+          (click)="saveNewFlashcard()"
+          color="primary"
+          class="add-btn"
+        >
+          ✅ Enregistrer la question
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+<!-- Modal de gestion des flashcards (ADMIN) -->
+<ion-modal
+  [isOpen]="isManageModalOpen"
+  (willDismiss)="closeManageModal()"
+  class="manage-modal"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Gestion des Flashcards</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeManageModal()" color="light">
+            <ion-icon name="close" size="large"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div *ngIf="flashcards.length === 0" class="empty-manage">
+        Aucune flashcard à gérer.
+      </div>
+
+      <ion-list>
+        <ion-item
+          *ngFor="let card of flashcards; let i = index"
+          lines="full"
+          class="manage-card"
+        >
+          <ion-label>
+            <h3>Question {{ i + 1 }}</h3>
+            <p><strong>Q:</strong> {{ card.question }}</p>
+            <div *ngFor="let opt of card.options; let j = index">
+              <span [style.color]="opt.isCorrect ? 'green' : 'gray'">
+                {{ getLetter(j) }}) {{ opt.text }}
+                <ion-icon
+                  *ngIf="opt.isCorrect"
+                  name="checkmark-circle"
+                  color="success"
+                ></ion-icon>
+              </span>
+            </div>
+          </ion-label>
+          <div class="manage-actions">
+            <ion-button
+              fill="clear"
+              color="warning"
+              (click)="openEditModal(card)"
+            >
+              <ion-icon name="pencil"></ion-icon>
+            </ion-button>
+            <ion-button
+              fill="clear"
+              color="danger"
+              (click)="confirmDelete(card._id)"
+            >
+              <ion-icon name="trash"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+<!-- Modal d'édition -->
+<ion-modal
+  [isOpen]="isEditModalOpen"
+  (willDismiss)="closeEditModal()"
+  class="light-modal"
+>
+  <ng-template>
+    <ion-header class="light-header">
+      <ion-toolbar color="warning">
+        <ion-title>✏️ Modifier la Question</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeEditModal()" color="medium">
+            <ion-icon name="close" size="large"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding light-content">
+      <div class="modal-body">
+        <ion-item lines="full" class="input-field">
+          <ion-input
+            label="Question"
+            labelPlacement="stacked"
+            [(ngModel)]="editQuestion"
+            placeholder="Entrez la question"
+          ></ion-input>
+        </ion-item>
+
+        <ion-list>
+          <ion-item
+            *ngFor="let option of editOptions; let i = index"
+            lines="full"
+            class="option-item"
+          >
+            <ion-input
+              [(ngModel)]="editOptions[i].text"
+              placeholder="Réponse {{ i + 1 }}"
+            ></ion-input>
+            <ion-checkbox
+              slot="end"
+              [(ngModel)]="editOptions[i].isCorrect"
+              (ngModelChange)="setEditCorrect(i)"
+            ></ion-checkbox>
+          </ion-item>
+        </ion-list>
+
+        <div class="modal-actions">
+          <ion-button
+            *ngIf="editOptions.length < 5"
+            (click)="addEditOption()"
+            fill="outline"
+            color="primary"
+            size="small"
+          >
+            ➕ Ajouter une réponse
+          </ion-button>
+          <ion-button
+            *ngIf="editOptions.length > 2"
+            (click)="removeEditOption(editOptions.length - 1)"
+            fill="outline"
+            color="danger"
+            size="small"
+          >
+            ➖ Supprimer
+          </ion-button>
+        </div>
+
+        <ion-button
+          expand="block"
+          (click)="saveEdit()"
+          color="warning"
+          class="add-btn"
+        >
+          ✅ Enregistrer les modifications
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

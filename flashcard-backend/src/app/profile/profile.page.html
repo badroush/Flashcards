@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Mon Profil</ion-title>
+
+    <!-- Boutons à droite -->
+    <ion-buttons slot="end">
+      <!-- Bouton Home -->
+      <ion-button (click)="goHome()">
+        <ion-icon name="home"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-content">
+  <!-- Informations utilisateur -->
+  <div class="user-card">
+<ion-item class="user-item">
+  <div class="user-avatar" (click)="selectImage()" style="cursor: pointer;">
+    <img [src]="profileImage" alt="Avatar" onerror="this.src='assets/img/default-avatar.png';">
+  </div>
+  <ion-label>
+    <h2 class="user-name">{{ currentUser?.name }}</h2>
+    <p class="user-email">{{ currentUser?.email }}</p>
+    <p class="user-role">Rôle: {{ currentUser?.role }}</p>
+  </ion-label>
+</ion-item>
+  </div>
+
+  <!-- Meilleur score -->
+  <div class="stats-card">
+    <ion-card class="card-elevated">
+      <ion-card-header>
+        <ion-card-title class="card-title">Statistiques</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <ion-icon name="trophy" color="warning"></ion-icon>
+            <div class="stat-value">{{ bestScore }}</div>
+            <div class="stat-label">Meilleur score solo</div>
+          </div>
+          <div class="stat-item">
+            <ion-icon name="game-controller" color="success"></ion-icon>
+            <div class="stat-value">{{ gameCount }}</div>
+            <div class="stat-label">Parties jouées</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Historique -->
+  <div class="history-card">
+    <ion-card class="card-elevated">
+      <ion-card-header>
+        <ion-card-title class="card-title">Historique des parties</ion-card-title>
+      </ion-card-header>
+      <ion-list class="history-list">
+        <ion-item *ngFor="let entry of history" class="history-entry">
+          <ion-label>
+            <h3 class="game-mode">{{ entry.gameMode === 'solo' ? 'Solo' : 'Duo' }}</h3>
+            <p class="game-score">Score: {{ entry.score }} / {{ entry.maxScore }}</p>
+            <p class="game-date">{{ formatDate(entry.date) }}</p>
+          </ion-label>
+          <ion-badge [color]="entry.score === entry.maxScore ? 'success' : 'warning'" slot="end">
+            {{ entry.score }}
+          </ion-badge>
+        </ion-item>
+
+        <!-- Message si vide -->
+        <ion-item *ngIf="history.length === 0" class="empty-history">
+          <ion-label class="ion-text-center">
+            <ion-icon name="time-outline" class="empty-icon"></ion-icon>
+            <p>Aucune partie jouée</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </div>
+</ion-content>
