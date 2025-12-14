@@ -1,5 +1,1 @@
-mot de passe base de donne MongoDB Atlas : 
-cJkykYJFdDPKVfCJ
 
-chaine de connexion a AtlasdB
-mongodb+srv://MobileAppUser:<db_password>@cluster1.jgbkcal.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1	
