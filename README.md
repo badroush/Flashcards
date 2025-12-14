@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Application Mobile de Flashcards - Ionic/Angular
 
 ## Description
@@ -25,3 +26,7 @@ Destinée à aider à l’apprentissage et à la révision.
 cd flashcard-backend
 npm install
 npm run dev
+=======
+# Flashcards
+Flashcards
+>>>>>>> 2726432327733286e8077e09be1e3234a31f9fbe
