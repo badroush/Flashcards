@@ -1,32 +1,63 @@
-<<<<<<< HEAD
-# Application Mobile de Flashcards - Ionic/Angular
+# 📚 Flashcards
 
-## Description
-Application mobile multiplateforme permettant de créer, visualiser, réviser et jouer avec des flashcards (questions/réponses).  
-Destinée à aider à l’apprentissage et à la révision.
+> A simple learning application based on digital flashcards for organizing and reviewing study content.
 
-## Fonctionnalités
-- Création de flashcards avec 2 à 4 réponses
-- Mode solo et mode duel (multi-joueur en temps réel)
-- Historique des parties
-- Profil utilisateur avec avatar modifiable
-- Système d’authentification (Admin/User)
-- Design élégant et thème clair
+![Java](https://img.shields.io/badge/Java-orange?logo=openjdk)
+![Android](https://img.shields.io/badge/Android-Application-3DDC84?logo=android)
+![Education](https://img.shields.io/badge/Domain-Education-blue)
 
-## Technologies
-- Frontend : Ionic/Angular
-- Backend : Node.js, Express, MongoDB
-- Communication : Socket.IO (temps réel), HTTP/REST
-- Déploiement : Capacitor (PWA, Android)
+---
 
-## Installation
+## 📌 Overview
 
-### Backend
-```bash
-cd flashcard-backend
-npm install
-npm run dev
-=======
-# Flashcards
-Flashcards
->>>>>>> 2726432327733286e8077e09be1e3234a31f9fbe
+**Flashcards** is a learning application designed to help users organize and review educational content through digital flashcards.
+
+The project explores the development of a simple educational application focused on memorization, revision and interactive learning.
+
+---
+
+## 🎯 Objectives
+
+The application aims to:
+
+- 📚 Facilitate revision
+- 🧠 Support memorization
+- 🗂️ Organize study content
+- 🔄 Provide an interactive review mechanism
+- 📱 Offer a simple mobile learning experience
+
+---
+
+## ✨ Main Features
+
+- Create and manage flashcards
+- Organize learning content
+- Review cards interactively
+- Display questions and answers
+- Support repeated revision
+- Simple and accessible user interface
+
+---
+
+## 🧠 Learning Concept
+
+The basic learning workflow is:
+
+```text
+        Flashcard
+            │
+            ▼
+       ┌─────────┐
+       │Question │
+       └────┬────┘
+            │
+            ▼
+        User Answer
+            │
+            ▼
+       ┌─────────┐
+       │ Answer  │
+       └────┬────┘
+            │
+            ▼
+       Review / Repeat
